@@ -37,3 +37,28 @@ sudo cp etcd.service /etc/systemd/system
 sudo systemctl start etcd
 sudo systemctl enable etcd
 ```
+
+Use this same pattern to install the kube-apiserver. This component creates a REST and cli interface for the kubelet, the main kubernetes executable which we will install next. 
+
+```
+wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kube-apiserver
+chmod +x kube-apiserver
+sudo cp kube-apiserver /usr/bin
+sudo cp kube-apiserver.service /etc/systemd/system
+```
+
+Next trigger the kube-apiserver server with the sytemctl service
+
+```
+sudo systemctl start kube-apiserver
+sudo systemctl enable kube-apiserver
+```
+
+Test the kube-apiserver to make sure its alive
+
+```
+sudo systemctl status kube-apiserver
+curl http://localhost:8080/api/v1/nodes
+```
+
+Now lets install the kubelet
