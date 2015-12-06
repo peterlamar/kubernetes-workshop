@@ -1,0 +1,16 @@
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+ExecStart=/usr/bin/kubelet \
+  --api-servers=http://192.168.33.10:8080 \
+  --allow-privileged=true 
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

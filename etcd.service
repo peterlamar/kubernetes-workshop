@@ -1,0 +1,17 @@
+[Unit]
+Description=Etcd Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStartPre=/usr/bin/mkdir -p /var/lib/etcd/ 
+WorkingDirectory=/var/lib/etcd/
+ExecStart=/usr/bin/etcd \
+  --data-dir=/var/lib/etcd \
+  --advertise-client-urls=http://127.0.0.1:237 \
+  --listen-client-urls=http://127.0.0.1:2379 \
+  --listen-peer-urls=http://127.0.0.1:2380
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
