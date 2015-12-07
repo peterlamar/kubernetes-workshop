@@ -58,4 +58,37 @@ sudo systemctl status kube-apiserver
 curl http://localhost:8080/api/v1/nodes
 ```
 
-Now lets install the kubelet
+Now lets install the kubelet. The Kubelet schedules containers and functions as the main executable of Kubernetes. It must run on each worker node to schedule docker containers. We are including it here in the master to utlize it as a worker as well. 
+
+```
+wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubelet
+chmod +x kubelet
+sudo cp kubelet /usr/bin
+sudo cp kubelet.service /etc/systemd/system
+```
+
+Test the kubelet to make sure its alive
+
+```
+sudo systemctl status kubelet
+```
+
+Finally, lets download the CLI component kubectl so we can query the cluster
+
+```
+wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubectl
+chmod +x kubeclt
+```
+
+Query the cluster for the number of nodes
+
+```
+kubectl get nodes
+```
+
+If everything went according to plan, then you should see something that resembles the following. 
+
+```
+NAME      LABELS                           STATUS    AGE
+kmaster   kubernetes.io/hostname=kmaster   Ready     2d
+```
