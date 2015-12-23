@@ -127,3 +127,61 @@ You should see both pods assigned if everything is working (2/2). Alternatively 
 nginx-scheduled  2/2       Running   0          35m
 ```
 
+Next is the kube-controller-manager. This pod creates the services and ensures the replication pods confirm to the desired behavior. Without it, our guestbook example fails to schedule pods that correspond to our services. To test this, try the guestbook example as is.
+
+```
+git clone https://github.com/kubernetes/kubernetes.git
+cd kubernetes
+kubectl create -f examples/guestbook/all-in-one/guestbook-all-in-one.yaml
+```
+
+This will fail to create the pods, and only the services will be visible. To verify, run the following with kubectl:
+
+```
+kubectl get services
+kubectl get pods
+```
+
+Lets enable the download and enable the controller manager to fix this example.
+
+```
+wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kube-controller-manager
+chmod +x kube-controller-manager
+sudo cp kube-controller-manager /usr/bin
+sudo cp kube-controller-manager.service /etc/systemd/system
+sudo systemctl start kube-controller-manager
+sudo systemctl enable kube-controller-manager
+```
+
+Now when the guestbook example is triggered, the pods should be created as expected
+
+```
+kubectl create -f examples/guestbook/all-in-one/guestbook-all-in-one.yaml
+```
+
+Finally, the last component, kube-proxy, connects services with their respective pods. Without this, you can curl a service and will not reach its respective pods. Try that now
+
+```
+kubectl get services
+curl 10.0.226.213 (ip of frontend service)
+```
+
+You should receive no response. Lets install the kube-proxy and try this again
+
+```
+wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kube-proxy
+chmod +x kube-proxy
+sudo cp kube-proxy /usr/bin
+sudo cp kube-proxy.service /etc/systemd/system
+sudo systemctl start kube-proxy
+sudo systemctl enable kube-proxy
+```
+
+And now curl the front end service
+
+```
+kubectl get services
+curl 10.0.226.213 (ip of frontend service)
+```
+
+Now receiving a html response from guestbook
