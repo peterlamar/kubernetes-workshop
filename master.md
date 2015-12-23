@@ -92,3 +92,38 @@ If everything went according to plan, then you should see something that resembl
 NAME      LABELS                           STATUS    AGE
 kmaster   kubernetes.io/hostname=kmaster   Ready     2d
 ```
+
+Now lets download and install the kube-scheduler. The scheduler assigns which pod to place the workload. 
+
+```
+wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kube-scheduler
+chmod +x kube-scheduler
+sudo cp kube-scheduler /usr/bin
+sudo cp kube-scheduler.service /etc/systemd/system
+```
+
+Trigger the scheduler to start with each restart
+
+```
+sudo systemctl start kube-scheduler
+sudo systemctl enable kube-scheduler
+```
+
+Test the kube-scheduler to make sure its alive. 
+
+```
+sudo systemctl status kube-scheduler
+```
+
+Now post a simple nginx job without a specified job in it's yaml using kubectl. This will force the kube-scheduler to find a node for our workload. 
+
+```
+kubectl create --filename nginx-scheduled.yaml
+```
+
+You should see both pods assigned if everything is working (2/2). Alternatively the pods will be stuck waiting and will not be assigned (0/2)
+
+```
+nginx-scheduled  2/2       Running   0          35m
+```
+
