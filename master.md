@@ -184,4 +184,4 @@ kubectl get services
 curl 10.0.226.213 (ip of frontend service)
 ```
 
-Now receiving a html response from guestbook
+This should provide a basic kubernetes master. 
